@@ -1,6 +1,6 @@
 
 
-const appState = {
+let appState = {
     title: {
         text: 'React.js 小书',
         color: 'red',
@@ -12,20 +12,45 @@ const appState = {
 }
 
 function renderApp (appState) {
-    renderTitle(appState.title)
-    renderContent(appState.content)
+    renderTitle(appState.title);
+    renderContent(appState.content);
 }
 
 function renderTitle (title) {
-    const titleDOM = document.getElementById('title')
-    titleDOM.innerHTML = title.text
-    titleDOM.style.color = title.color
+    const titleDOM = document.getElementById('title');
+    titleDOM.innerHTML = title.text;
+    titleDOM.style.color = title.color;
 }
 
 function renderContent (content) {
-    const contentDOM = document.getElementById('content')
-    contentDOM.innerHTML = content.text
-    contentDOM.style.color = content.color
+    const contentDOM = document.getElementById('content');
+    contentDOM.innerHTML = content.text;
+    contentDOM.style.color = content.color;
 }
 
-renderApp(appState)
+function stateChanger(action) {
+    switch(action.type) {
+        case 'UPDATE_TITLE_TEXT':
+            appState.title.text = action.text;
+            break;
+        case 'UPDATE_TITLE_COLOR':
+            appState.title.color = action.color;
+            break;
+        default:
+            break;
+    }
+}
+
+function creatStore(state,stateChanger) {
+    const getState = () => state;
+    const dispatch = (action) => stateChanger(state,action);
+    return { getState, dispatch }
+}
+
+const store = creatStore(appState,stateChanger);
+
+renderApp(store.getState());
+store.dispatch({ type: 'UPDATE_TITLE_TEXT', text: '《React.js 小书》' }); // 修改标题文本
+store.dispatch({ type: 'UPDATE_TITLE_COLOR', color: 'blue' }); // 修改标题颜色
+
+renderApp(store.getState());
